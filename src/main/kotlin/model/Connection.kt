@@ -12,28 +12,32 @@ import org.json.JSONObject
 
 
 class Connection {
+    private var connection: HttpURLConnection? = null
+    private val UTF8 = Charset.forName("UTF-8")
+    val responseContent = StringBuffer()
     var reader: BufferedReader? = null
     var line: String? = null
-    val responseContent: StringBuffer = Connection.responseContent
+    //val responseContent: StringBuffer = Connection.responseContent
 
     fun connect(inputURL: String?) {
         try {
-            var url = URL(inputURL)
-            connection = url.openConnection() as HttpURLConnection
-            connection!!.requestMethod = "GET"
-            connection!!.connectTimeout = 5000
-            connection!!.readTimeout = 5000
-            val status: Int = connection!!.responseCode
+            val url = URL(inputURL)
+            val connection = url.openConnection() as HttpURLConnection
+            connection.requestMethod = "GET"
+            connection.connectTimeout = 5000
+            connection.readTimeout = 5000
+            val status: Int = connection.responseCode
             println(status) //200 means connection successful
+            println("HttpURL connected successfully") //200 means connection successful
             if (status > 299) {
-                reader = BufferedReader(InputStreamReader(connection!!.errorStream))
-                while (reader!!.readLine().also { line = it } != null) {
+                reader = BufferedReader(InputStreamReader(connection.errorStream))
+                while (reader?.readLine().also { line = it } != null) {
                     responseContent.append(line)
                 }
                 reader!!.close()
             } else {
-                reader = BufferedReader(InputStreamReader(connection!!.inputStream, UTF8))
-                while (reader!!.readLine().also { line = it } != null) {
+                reader = BufferedReader(InputStreamReader(connection.inputStream, UTF8))
+                while (reader?.readLine().also { line = it } != null) {
                     responseContent.append(line)
                 }
                 reader!!.close()
@@ -51,24 +55,4 @@ class Connection {
         connection?.disconnect()
     }
 
-    companion object {
-        private var connection: HttpURLConnection? = null
-        private val UTF8 = Charset.forName("UTF-8")
-        private val responseContent = StringBuffer()
-        fun parse(responseBody: String?): String? {
-            val jsonObject = JSONObject(responseBody)
-            val albums: JSONArray = jsonObject.getJSONArray("articles")
-            print("""
-    ID Title UserID
-    
-    """.trimIndent())
-            for (i in 0 until albums.length()) {
-                val album: JSONObject = albums.getJSONObject(i)
-                val author: String = album.getString("author")
-                val title: String = album.getString("title")
-                println(author)
-            }
-            return null
-        }
-    }
 }

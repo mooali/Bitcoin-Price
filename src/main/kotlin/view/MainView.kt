@@ -1,13 +1,13 @@
 package view
 
 import model.Styles
-import model.Testo
+import model.BitcoinAPI
 import tornadofx.*
 
 class MainView : View("Hello TornadoFX") {
     override val root = hbox {
-        var test = Testo()
+        var test = BitcoinAPI()
         test.test()
-        println(test.getAuthor())
+        println(test.getUpdatedTime())
     }
 }
