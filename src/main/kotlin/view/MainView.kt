@@ -8,6 +8,10 @@ class MainView : View("Hello TornadoFX") {
     override val root = hbox {
         var test = BitcoinAPI()
         test.test()
-        println(test.getUpdatedTime())
+        label(test.getUpdatedTime()) {
+            addClass(Styles.heading)
+        }
+
+        println()
     }
 }
