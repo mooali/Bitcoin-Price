@@ -1,5 +1,8 @@
+
 package view
 
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import model.Styles
 import model.BitcoinAPI
 import tornadofx.*
@@ -7,11 +10,11 @@ import tornadofx.*
 class MainView : View("Hello TornadoFX") {
     override val root = hbox {
         var test = BitcoinAPI()
-        test.test()
-        label(test.getUpdatedTime()) {
-            addClass(Styles.heading)
+        runBlocking {
+            label(test.getUpdateTime()) {
+                addClass(Styles.heading)
+            }
         }
 
-        println()
     }
 }

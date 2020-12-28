@@ -19,7 +19,7 @@ class Connection {
     var line: String? = null
     //val responseContent: StringBuffer = Connection.responseContent
 
-    fun connect(inputURL: String?) {
+     fun connect(inputURL: String?) {
         try {
             val url = URL(inputURL)
             val connection = url.openConnection() as HttpURLConnection
@@ -27,7 +27,7 @@ class Connection {
             connection.connectTimeout = 5000
             connection.readTimeout = 5000
             val status: Int = connection.responseCode
-            println(status) //200 means connection successful
+            //println(status) //200 means connection successful
             println("HttpURL connected successfully") //200 means connection successful
             if (status > 299) {
                 reader = BufferedReader(InputStreamReader(connection.errorStream))
@@ -48,6 +48,7 @@ class Connection {
             e.printStackTrace()
         } finally {
             connection?.disconnect()
+            println("Disconnected")
         }
     }
 

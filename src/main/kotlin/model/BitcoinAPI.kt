@@ -2,13 +2,18 @@ package model
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 
 
 class BitcoinAPI {
 
-    private val connection = Connection()
+    private var connection = Connection()
     private var responseContent: StringBuffer? = null
+    private var updatedTime: String? = null
 
     private val objectMapper: ObjectMapper = getDefaultObjectMapper()
 
@@ -22,23 +27,30 @@ class BitcoinAPI {
     }
 
 
-    fun test() {
-        connection.connect("https://api.coindesk.com/v1/bpi/currentprice.json")
-        responseContent = connection.responseContent
-        println(responseContent!![5].toString())
+    fun apiRequestJson() {
+         connection.connect("https://api.coindesk.com/v1/bpi/currentprice.json")
+         responseContent = connection.responseContent
+
     }
 
 
-    fun getUpdatedTime(): String {
-        val jsonObject = JSONObject(responseContent.toString())
+    suspend fun getUpdateTime(): String {
+        CoroutineScope(IO).launch {
+            println("in get update time")
+            while (true) {
+                apiRequestJson()
+                val jsonObject = JSONObject(responseContent.toString())
+                var node = parse(jsonObject.getJSONObject("time").toString())
+                updatedTime = node.get("updated").asText()
+                println(updatedTime)
+                connection = Connection()
+                delay(6000)
+            }
+        }
+        return this.updatedTime.toString()
+
         //return jsonObject.getJSONObject("time").getString("updated")
-
-        var node = parse(jsonObject.getJSONObject("time").toString())
-        return node.get("updated").asText()
         //return jsonObject.getJSONObject("bpi").getJSONObject("USD").getString("description")
-
     }
-
-
 
 }
