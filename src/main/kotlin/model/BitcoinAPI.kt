@@ -12,7 +12,11 @@ import org.json.JSONObject
 class BitcoinAPI {
 
     private var responseContent: StringBuffer? = null
-    private var updatedTime: String? = null
+    private var updatedTime: String = ""
+    private var rateUSD: String = ""
+    private var rateGBP: String = ""
+    private var rateEUR: String = ""
+
 
     private val objectMapper: ObjectMapper = getDefaultObjectMapper()
 
@@ -28,32 +32,40 @@ class BitcoinAPI {
 
 
 
-    suspend fun getUpdateTime() {
-        CoroutineScope(IO).launch {
-            while (true) {
-                val jsonObject = getAPIdata()
-                val node = parse(jsonObject.getJSONObject("time").toString())
-                updatedTime = node.get("updated").asText()
-                println("in get update time " + updatedTime)
-                setUpdateTime(node.get("updated").asText())
-                delay(3000)
-            }
-        }
-
+     fun getUpdateTime():String? {
+         val jsonObject = getAPIdata()
+         val node = parse(jsonObject.getJSONObject("time").toString())
+         updatedTime = node.get("updated").asText()
+         println("in get update time " + updatedTime)
+         this.updatedTime = node.get("updated").asText()
+         return this.updatedTime
         //return jsonObject.getJSONObject("time").getString("updated")
         //return jsonObject.getJSONObject("bpi").getJSONObject("USD").getString("description")
     }
 
-    suspend fun getUpdateT(): String{
-        getUpdateTime()
-        return this.updatedTime.toString()
 
+    fun getRateUSD():String{
+        val jsonObject = getAPIdata()
+        val node = parse(jsonObject.getJSONObject("bpi").getJSONObject("USD").toString())
+        this.rateUSD = node.get("rate").asText()
+        return this.rateUSD
+    }
+
+    fun getRateGBP():String{
+        val jsonObject = getAPIdata()
+        val node = parse(jsonObject.getJSONObject("bpi").getJSONObject("GBP").toString())
+        rateEUR = node.get("rate").asText()
+        return this.rateGBP
+    }
+
+    fun getRateEUR():String{
+        val jsonObject = getAPIdata()
+        val node = parse(jsonObject.getJSONObject("bpi").getJSONObject("EUR").toString())
+        rateEUR = node.get("rate").asText()
+        return this.rateEUR
     }
 
 
-    fun setUpdateTime(str:String?){
-        this.updatedTime = str
-    }
 
 
     fun getAPIdata(): JSONObject {
@@ -62,5 +74,8 @@ class BitcoinAPI {
         responseContent = connection.responseContent
         return JSONObject(responseContent.toString())
     }
+
+
+
 
 }

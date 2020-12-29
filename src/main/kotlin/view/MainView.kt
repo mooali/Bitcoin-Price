@@ -15,14 +15,15 @@ import tornadofx.*
 
 class MainView : View("Hello TornadoFX") {
     override val root = hbox {
-        var some = SimpleStringProperty()
-        some.value = "hallo"
-
+        prefWidth = 800.0
+        prefHeight = 600.0
         val bitcoinAPI = BitcoinAPI()
+        var some = SimpleStringProperty()
+        some.value = bitcoinAPI.getUpdateTime()
+
         CoroutineScope(Main).launch {
             while (true) {
-                some.value = bitcoinAPI.getUpdateT()
-                println("in main view" + bitcoinAPI.getUpdateT())
+                some.value = bitcoinAPI.getUpdateTime()
                 delay(5000)
             }
         }
@@ -30,6 +31,5 @@ class MainView : View("Hello TornadoFX") {
             bind(some)
             addClass(Styles.heading)
         }
-
     }
 }
