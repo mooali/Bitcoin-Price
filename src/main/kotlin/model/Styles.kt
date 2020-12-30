@@ -1,5 +1,7 @@
 package model
 
+import javafx.geometry.Pos
+import javafx.scene.Cursor
 import javafx.scene.text.FontWeight
 import tornadofx.Stylesheet
 import tornadofx.box
@@ -10,6 +12,7 @@ class Styles : Stylesheet() {
     companion object {
         val heading by cssclass()
         val boxes by cssclass()
+        val bottomHbox by cssclass()
     }
 
     init {
@@ -17,9 +20,13 @@ class Styles : Stylesheet() {
             padding = box(10.px)
             fontSize = 20.px
             fontWeight = FontWeight.BOLD
+            cursor = Cursor.TEXT
         }
         boxes {
             padding = box(20.px)
+        }
+        bottomHbox{
+            alignment = Pos.BASELINE_LEFT
         }
     }
 }

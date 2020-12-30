@@ -14,6 +14,8 @@ import kotlinx.coroutines.runBlocking
 import model.Styles
 import model.BitcoinAPI
 import tornadofx.*
+import java.io.File
+import java.lang.StringBuilder
 
 class MainView : View("Hello TornadoFX") {
     override val root = borderpane {
@@ -26,7 +28,7 @@ class MainView : View("Hello TornadoFX") {
         val rateUSD = SimpleStringProperty()
         val rateGBP = SimpleStringProperty()
         val rateEUR = SimpleStringProperty()
-        val history1 = SimpleStringProperty()
+        var history1 = StringBuilder("")
 
         rateUSD.value = bitcoinAPI.getRateUSD()
         rateGBP.value = bitcoinAPI.getRateGBP()
@@ -57,7 +59,6 @@ class MainView : View("Hello TornadoFX") {
         CoroutineScope(Main).launch {
             while (true) {
                 rateEUR.value = "Price: "+bitcoinAPI.getRateEUR()+"€"
-                history1.value="Price: "+bitcoinAPI.getRateEUR()+"€" + " at "+updatedTime.value
                 delay(5000)
             }
         }
@@ -85,20 +86,57 @@ class MainView : View("Hello TornadoFX") {
             }
         }
         bottom {
+            addClass(Styles.boxes)
+            var i = 0
+            var txtArea = textarea()
 
+            vbox {
             scrollpane {
+                addClass(Styles.boxes)
                 prefHeight = 200.0
                 prefWidth = 500.0
-                textflow() {
+                 txtArea = textarea {
+                    this.isEditable = false
                     prefHeight = 200.0
                     prefWidth = 500.0
-                    for(i in 1..5){
-                        label {
-                            bind(history1)
+                    //this.isWrapText = true
+                    CoroutineScope(Main).launch {
+                        while (i<=60) {
+                            history1 = StringBuilder("")
+                            history1.append(rateEUR.value + " at " + updatedTime.value + "\n")
+                            appendText(history1.toString())
+                            separator()
+                            i++
+                            delay(1000)
+                            if(i == 60){
+                                i = 0
+                            }
                         }
+                    }
+                    }
                 }
+                hbox {
+                    addClass(Styles.bottomHbox)
+                  var feedbackLabel= label {
+                      isVisible = false
+                      text = "History has been exported successfully"
+                    }
+                    button {
+                        text = "click me"
+                        action {
+                            bitcoinAPI.printOutHistory(txtArea.text)
+                            println(txtArea.text)
+                            feedbackLabel.isVisible = true
+
+                        }
+                    }
+                }
+                label {
+                    text = "Powered by CoinDesk"
                 }
             }
+
+
+        }
         }
     }
-}

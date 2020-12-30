@@ -7,6 +7,9 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.json.JSONObject
+import java.io.File
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 
 class BitcoinAPI {
@@ -73,8 +76,13 @@ class BitcoinAPI {
         return this.rateEUR
     }
 
-
-
-
-
-}
+    fun printOutHistory(txt:String){
+        var fileName = "src/main/output/BitcoinHistory"+ LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy_HH_mm_ss"))+".txt"
+        var outputFile = File(fileName)
+        if(!outputFile.exists()){
+            return outputFile.bufferedWriter().use { out ->
+                out.write("|PRICE|........|COURNNCY|......................|TIME|"+"\n")
+                out.write(txt) }
+        }
+        }
+    }
