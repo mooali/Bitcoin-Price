@@ -30,8 +30,6 @@ class BitcoinAPI {
     }
 
 
-
-
      fun getUpdateTime():String? {
          val jsonObject = getAPIdata()
          val node = parse(jsonObject.getJSONObject("time").toString())
@@ -44,6 +42,14 @@ class BitcoinAPI {
     }
 
 
+    fun getAPIdata(): JSONObject {
+        val connection = Connection()
+        connection.connect("https://api.coindesk.com/v1/bpi/currentprice.json")
+        responseContent = connection.responseContent
+        return JSONObject(responseContent.toString())
+    }
+
+
     fun getRateUSD():String{
         val jsonObject = getAPIdata()
         val node = parse(jsonObject.getJSONObject("bpi").getJSONObject("USD").toString())
@@ -51,12 +57,14 @@ class BitcoinAPI {
         return this.rateUSD
     }
 
+
     fun getRateGBP():String{
         val jsonObject = getAPIdata()
         val node = parse(jsonObject.getJSONObject("bpi").getJSONObject("GBP").toString())
-        rateEUR = node.get("rate").asText()
+        rateGBP = node.get("rate").asText()
         return this.rateGBP
     }
+
 
     fun getRateEUR():String{
         val jsonObject = getAPIdata()
@@ -65,15 +73,6 @@ class BitcoinAPI {
         return this.rateEUR
     }
 
-
-
-
-    fun getAPIdata(): JSONObject {
-        val connection = Connection()
-        connection.connect("https://api.coindesk.com/v1/bpi/currentprice.json")
-        responseContent = connection.responseContent
-        return JSONObject(responseContent.toString())
-    }
 
 
 
