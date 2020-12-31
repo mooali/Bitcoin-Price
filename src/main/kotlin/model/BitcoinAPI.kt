@@ -2,10 +2,6 @@ package model
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.io.File
 import java.time.LocalDateTime
@@ -74,6 +70,29 @@ class BitcoinAPI {
         val node = parse(jsonObject.getJSONObject("bpi").getJSONObject("EUR").toString())
         rateEUR = node.get("rate").asText()
         return this.rateEUR
+    }
+
+    fun getEURcurrency():String{
+        val jsonObject = getAPIdata()
+        val node = parse(jsonObject.getJSONObject("bpi").getJSONObject("EUR").toString())
+        return node.get("code").asText()
+    }
+    fun getUSDcurrency():String{
+        val jsonObject = getAPIdata()
+        val node = parse(jsonObject.getJSONObject("bpi").getJSONObject("USD").toString())
+        return node.get("code").asText()
+    }
+
+    fun getGBPcurrency():String{
+        val jsonObject = getAPIdata()
+        val node = parse(jsonObject.getJSONObject("bpi").getJSONObject("GBP").toString())
+        return node.get("code").asText()
+    }
+
+    fun getInfo(jsonKey1: String, jsonKey2: String, infoKey: String):String{
+        val jsonObject = getAPIdata()
+        val node = parse(jsonObject.getJSONObject(jsonKey1).getJSONObject(jsonKey2).toString())
+        return node.get(infoKey).asText()
     }
 
     fun printOutHistory(txt:String){

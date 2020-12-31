@@ -27,6 +27,7 @@ class Styles : Stylesheet() {
         }
         bottomHbox{
             alignment = Pos.BASELINE_LEFT
+            spacing = 10.px
         }
     }
 }
