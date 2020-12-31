@@ -3,7 +3,9 @@ package view
 
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
+import javafx.scene.control.ContentDisplay
 import javafx.scene.control.TableView
+import javafx.scene.image.Image
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.delay
@@ -92,6 +94,12 @@ class MainView : View("Hello TornadoFX") {
             hbox {
                 vbox {
                     addClass(Styles.boxes)
+
+                    label("Hi",imageview("file:file:./src/main/resources/usa_flag.png"){
+                        fitHeight = 50.0; fitWidth = 50.0 }) {
+                        contentDisplay = ContentDisplay.RIGHT
+                    }
+
                     label {
                         bind(rateUSD)
                         addClass(Styles.heading)
