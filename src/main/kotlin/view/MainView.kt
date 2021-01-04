@@ -7,6 +7,7 @@ import javafx.scene.control.ContentDisplay
 import javafx.scene.control.TableView
 import javafx.scene.image.Image
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -14,11 +15,12 @@ import model.Bitcoin
 import model.Styles
 import model.BitcoinAPI
 import tornadofx.*
+import java.lang.Exception
 import java.lang.StringBuilder
 
 class MainView : View("Hello TornadoFX") {
 
-    private var dat = FXCollections.observableArrayList<Bitcoin>()
+    private var data = FXCollections.observableArrayList<Bitcoin>()
     var tblItems : TableView<Bitcoin> by singleAssign()
     override val root = borderpane {
 
@@ -57,7 +59,7 @@ class MainView : View("Hello TornadoFX") {
                 rateUSD.value = bitcoinAPI.getRateUSD()
                 usdCurrency.value = bitcoinAPI.getUSDcurrency()
                 val bitcoin = Bitcoin(rateUSD.value, usdCurrency.value, updatedTime.value)
-                dat.add(bitcoin)
+                data.add(bitcoin)
                 delay(5000)
             }
         }
@@ -67,7 +69,7 @@ class MainView : View("Hello TornadoFX") {
                 rateGBP.value = bitcoinAPI.getRateGBP()
                 gbpCurrency.value = bitcoinAPI.getGBPcurrency()
                 val bitcoin = Bitcoin(rateGBP.value, gbpCurrency.value, updatedTime.value)
-                dat.add(bitcoin)
+                data.add(bitcoin)
                 delay(5000)
             }
         }
@@ -77,7 +79,7 @@ class MainView : View("Hello TornadoFX") {
                 rateEUR.value = bitcoinAPI.getRateEUR()
                 eurCurrency.value = bitcoinAPI.getEURcurrency()
                 val bitcoin = Bitcoin(rateEUR.value, eurCurrency.value, updatedTime.value)
-                dat.add(bitcoin)
+                data.add(bitcoin)
                 delay(5000)
             }
         }
@@ -137,7 +139,7 @@ class MainView : View("Hello TornadoFX") {
             }
 
             vbox {
-                tblItems = tableview(dat) {
+                tblItems = tableview(data) {
                     //this.isEditable = false
                     column("Price",Bitcoin::priceProperty)
                     column("Currency",Bitcoin::currencyProperty)
@@ -162,18 +164,25 @@ class MainView : View("Hello TornadoFX") {
 
                 hbox {
                     var feedbackLabel = label()
+
                     addClass(Styles.bottomHbox)
                     button {
                         text = "Export History"
+                        var txt = ""
                         action {
-
+                            bitcoinAPI.printOutHistory(data)
                             feedbackLabel.isVisible = true
+                            CoroutineScope(IO).launch {
+                                delay(5000)
+                                feedbackLabel.isVisible = false
+                            }
 
                         }
                     }
                     feedbackLabel= label {
                         isVisible = false
                         text = "History has been exported successfully"
+                        addClass(Styles.errorLabel)
                     }
                 }
                 label {

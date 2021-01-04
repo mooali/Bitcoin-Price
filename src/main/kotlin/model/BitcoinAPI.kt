@@ -2,8 +2,10 @@ package model
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import javafx.collections.ObservableList
 import org.json.JSONObject
 import java.io.File
+import java.lang.Exception
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -95,13 +97,22 @@ class BitcoinAPI {
         return node.get(infoKey).asText()
     }
 
-    fun printOutHistory(txt:String){
-        var fileName = "src/main/output/BitcoinHistory"+ LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy_HH_mm_ss"))+".txt"
+
+    fun printOutHistory(bitcoin: ObservableList<Bitcoin>){
+        var fileName = "src/main/output/BitcoinHistory"+ LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy_HH_mm_ss"))+".csv"
         var outputFile = File(fileName)
-        if(!outputFile.exists()){
-            return outputFile.bufferedWriter().use { out ->
-                out.write("|PRICE|........|COURNNCY|......................|TIME|"+"\n")
-                out.write(txt) }
+        try {
+            if (!outputFile.exists()) {
+                return outputFile.bufferedWriter().use { out ->
+                    for (coin in bitcoin) {
+                        val txt = coin.priceProperty.value + "," + coin.currencyProperty.value + "," + coin.updatedTimeProperty.value + "\n"
+                        out.write(txt)
+                    }
+                }
+            }
+        }catch (e: Exception) {
+            e.printStackTrace()
         }
-        }
+
     }
+}

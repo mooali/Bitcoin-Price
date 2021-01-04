@@ -2,6 +2,7 @@ package model
 
 import javafx.geometry.Pos
 import javafx.scene.Cursor
+import javafx.scene.paint.Color
 import javafx.scene.text.FontWeight
 import tornadofx.Stylesheet
 import tornadofx.box
@@ -13,6 +14,8 @@ class Styles : Stylesheet() {
         val heading by cssclass()
         val boxes by cssclass()
         val bottomHbox by cssclass()
+        val errorLabel by cssclass()
+
     }
 
     init {
@@ -29,6 +32,10 @@ class Styles : Stylesheet() {
         bottomHbox{
             alignment = Pos.BASELINE_LEFT
             spacing = 10.px
+        }
+
+        errorLabel{
+            textFill = Color.RED
         }
     }
 }
