@@ -24,6 +24,7 @@ class Styles : Stylesheet() {
         }
         boxes {
             padding = box(20.px)
+            alignment = Pos.CENTER
         }
         bottomHbox{
             alignment = Pos.BASELINE_LEFT

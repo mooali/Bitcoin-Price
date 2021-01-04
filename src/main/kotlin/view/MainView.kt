@@ -23,7 +23,7 @@ class MainView : View("Hello TornadoFX") {
     override val root = borderpane {
 
         prefHeight = 800.0
-        prefWidth = 500.0
+        prefWidth = 700.0
 
 
         val bitcoinAPI = BitcoinAPI()
@@ -95,35 +95,33 @@ class MainView : View("Hello TornadoFX") {
                 vbox {
                     addClass(Styles.boxes)
 
-                    label("Hi",imageview("file:file:./src/main/resources/usa_flag.png"){
-                        fitHeight = 50.0; fitWidth = 50.0 }) {
-                        contentDisplay = ContentDisplay.RIGHT
-                    }
+
+
+                    imageview("file:src/main/resources/usa_flag.png"){
+                        fitHeight = 75.0; fitWidth = 75.0 }
 
                     label {
                         bind(rateUSD)
-                        addClass(Styles.heading)
-                    }
-                    label {
-                        bind(rateGBP)
-                        addClass(Styles.heading)
-                    }
-                    label {
-                        bind(rateEUR)
                         addClass(Styles.heading)
                     }
                 }
                 vbox {
                     addClass(Styles.boxes)
 
-                    label {
-                        bind(rateUSD)
-                        addClass(Styles.heading)
-                    }
+                    imageview("file:src/main/resources/uk_flag.png"){
+                        fitHeight = 75.0; fitWidth = 75.0 }
+
                     label {
                         bind(rateGBP)
                         addClass(Styles.heading)
                     }
+                }
+                vbox {
+                    addClass(Styles.boxes)
+
+                    imageview("file:src/main/resources/eu_flag.png"){
+                        fitHeight = 75.0; fitWidth = 75.0 }
+
                     label {
                         bind(rateEUR)
                         addClass(Styles.heading)
