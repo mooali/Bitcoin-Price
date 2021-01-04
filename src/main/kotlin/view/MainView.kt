@@ -163,9 +163,9 @@ class MainView : View("Hello TornadoFX") {
                  }
 
                 hbox {
+                    addClass(Styles.bottomHbox)
                     var feedbackLabel = label()
 
-                    addClass(Styles.bottomHbox)
                     button {
                         text = "Export History"
                         var txt = ""

@@ -30,7 +30,7 @@ class Styles : Stylesheet() {
             alignment = Pos.CENTER
         }
         bottomHbox{
-            alignment = Pos.BASELINE_LEFT
+            alignment = Pos.CENTER_LEFT
             spacing = 10.px
         }
 
