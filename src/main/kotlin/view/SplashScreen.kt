@@ -7,7 +7,7 @@ import kotlin.concurrent.thread
 
 class SplashScreen : View("Welcome"){
     override val root = stackpane {
-        prefHeight = 800.0
+        prefHeight = 790.0
         prefWidth = 700.0
         vbox {
             alignment = Pos.CENTER
