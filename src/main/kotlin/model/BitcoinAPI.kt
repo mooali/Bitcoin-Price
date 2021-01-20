@@ -38,7 +38,6 @@ class BitcoinAPI {
     fun setUpdatedTime(updatedTime:SimpleStringProperty){
         CoroutineScope(Dispatchers.Main).launch {
             while (true) {
-                println("starting.....")
                 updatedTime.value = getCurruncyData(Currency.CHF).time
                 delay(60000)
             }
@@ -52,7 +51,6 @@ class BitcoinAPI {
     fun setLabels(rate:SimpleStringProperty,currencyCode:SimpleStringProperty,currency: Currency,updatedTime: SimpleStringProperty){
         CoroutineScope(Dispatchers.Main).launch {
             while (true) {
-                println("starting.....")
                 rate.value = getCurruncyData(currency).price
                 currencyCode.value = getCurruncyData(currency).currencyCode
                 val bitcoin = Bitcoin(rate.value, currencyCode.value, updatedTime.value)
