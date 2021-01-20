@@ -16,6 +16,7 @@ class Styles : Stylesheet() {
         val bottomHbox by cssclass()
         val errorLabel by cssclass()
         val priceLabel by cssclass()
+        val buttons by cssclass()
 
     }
 
@@ -38,10 +39,27 @@ class Styles : Stylesheet() {
         bottomHbox{
             alignment = Pos.CENTER_LEFT
             spacing = 10.px
+            padding = box(10.px)
+        }
+
+        buttons{
+            minWidth = 30.px
+            minHeight = 20.px
+            backgroundColor += Color.rgb(0,204,204)
+            and(hover) {
+                backgroundColor += Color.rgb(0,255,255)
+            }
+            fontSize = 15.px
+            fontWeight = FontWeight.BOLD
+            textFill = Color.BLACK
+            cursor = Cursor.HAND
+
         }
 
         errorLabel{
             textFill = Color.RED
+            fontSize = 20.px
+            fontWeight = FontWeight.BOLD
         }
     }
 }

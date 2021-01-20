@@ -15,7 +15,6 @@ import java.lang.StringBuilder
 
 class MainView : View("Bitcoin Price") {
 
-    private var data = FXCollections.observableArrayList<Bitcoin>()
     var tblItems : TableView<Bitcoin> by singleAssign()
     val bitcoinApi = BitcoinAPI()
 
@@ -37,67 +36,21 @@ class MainView : View("Bitcoin Price") {
         val chfCurrency = SimpleStringProperty()
         val nzdCurrency = SimpleStringProperty()
 
-        var history1: StringBuilder;
+        var history1: StringBuilder
 
 
+        /**
+         * set updatedTime,
+         */
+        bitcoinApi.setUpdatedTime(updatedTime)
 
-
-        CoroutineScope(Main).launch {
-            while (true) {
-                println("starting.....")
-                updatedTime.value = bitcoinApi.getCurruncyData(Currency.CHF).time
-                delay(2000)
-            }
-        }
 
         runAsync {
-            CoroutineScope(Main).launch {
-                while (true) {
-                    println("starting.....")
-                    rateUSD.value = bitcoinApi.getCurruncyData(Currency.USD).price
-                    usdCurrency.value = bitcoinApi.getCurruncyData(Currency.USD).currencyCode
-                    val bitcoin = Bitcoin(rateUSD.value, usdCurrency.value, updatedTime.value)
-                    data.add(bitcoin)
-                    delay(2000)
-                }
-            }
-            CoroutineScope(Main).launch {
-                while (true) {
-                    rateGBP.value = bitcoinApi.getCurruncyData(Currency.GBP).price
-                    gbpCurrency.value = bitcoinApi.getCurruncyData(Currency.GBP).currencyCode
-                    val bitcoin = Bitcoin(rateGBP.value, gbpCurrency.value, updatedTime.value)
-                    data.add(bitcoin)
-                    delay(2000)
-                }
-            }
-            CoroutineScope(Main).launch {
-                while (true) {
-                    rateEUR.value = bitcoinApi.getCurruncyData(Currency.EUR).price
-                    eurCurrency.value = bitcoinApi.getCurruncyData(Currency.EUR).currencyCode
-                    val bitcoin = Bitcoin(rateEUR.value, eurCurrency.value, updatedTime.value)
-                    data.add(bitcoin)
-                    delay(2000)
-                }
-            }
-            CoroutineScope(Main).launch {
-                while (true) {
-                    rateCHF.value = bitcoinApi.getCurruncyData(Currency.CHF).price
-                    chfCurrency.value = bitcoinApi.getCurruncyData(Currency.CHF).currencyCode
-                    val bitcoin = Bitcoin(rateCHF.value, chfCurrency.value, updatedTime.value)
-                    data.add(bitcoin)
-                    delay(2000)
-                }
-            }
-            CoroutineScope(Main).launch {
-                while (true) {
-                    rateNZD.value = bitcoinApi.getCurruncyData(Currency.NZD).price
-                    nzdCurrency.value = bitcoinApi.getCurruncyData(Currency.NZD).currencyCode
-                    val bitcoin = Bitcoin(rateCHF.value, nzdCurrency.value, updatedTime.value)
-                    data.add(bitcoin)
-                    delay(2000)
-                }
-            }
-
+            bitcoinApi.setLabels(rateUSD,usdCurrency,Currency.USD,updatedTime)
+            bitcoinApi.setLabels(rateGBP,gbpCurrency,Currency.GBP,updatedTime)
+            bitcoinApi.setLabels(rateEUR,eurCurrency,Currency.EUR,updatedTime)
+            bitcoinApi.setLabels(rateCHF,chfCurrency,Currency.CHF,updatedTime)
+            bitcoinApi.setLabels(rateNZD,nzdCurrency,Currency.NZD,updatedTime)
         }
 
 
@@ -180,7 +133,7 @@ class MainView : View("Bitcoin Price") {
 
             vbox {
 
-                tblItems = tableview(data) {
+                tblItems = tableview(bitcoinApi.data) {
 
                     //this.isEditable = false
                     column("Price",Bitcoin::priceProperty)
@@ -209,10 +162,10 @@ class MainView : View("Bitcoin Price") {
                     var feedbackLabel = label()
 
                     button {
+                        addClass(Styles.buttons)
                         text = "Export History"
-                        var txt = ""
                         action {
-                            bitcoinApi.printOutHistory(data)
+                            bitcoinApi.printOutHistory(bitcoinApi.data)
                             feedbackLabel.isVisible = true
                             CoroutineScope(IO).launch {
                                 delay(5000)

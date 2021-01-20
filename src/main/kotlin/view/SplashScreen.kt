@@ -31,7 +31,7 @@ class SplashScreen : View("Welcome"){
 
     override fun onDock(){
         thread {
-            Thread.sleep(4000)
+            Thread.sleep(3500)
             runLater {
                 close()
                 primaryStage.show()
