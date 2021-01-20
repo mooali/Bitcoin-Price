@@ -3,86 +3,105 @@ package view
 
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
-import javafx.scene.control.ContentDisplay
 import javafx.scene.control.TableView
-import javafx.scene.image.Image
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import model.Bitcoin
-import model.Styles
-import model.BitcoinAPI
+import model.*
 import tornadofx.*
-import java.lang.Exception
 import java.lang.StringBuilder
 
-class MainView : View("Hello TornadoFX") {
+class MainView : View("Bitcoin Price") {
 
     private var data = FXCollections.observableArrayList<Bitcoin>()
     var tblItems : TableView<Bitcoin> by singleAssign()
+    val bitcoinApi = BitcoinAPI()
+
     override val root = borderpane {
 
         prefHeight = 800.0
         prefWidth = 700.0
 
 
-        val bitcoinAPI = BitcoinAPI()
         val updatedTime = SimpleStringProperty()
         val rateUSD = SimpleStringProperty()
         val rateGBP = SimpleStringProperty()
         val rateEUR = SimpleStringProperty()
+        val rateCHF = SimpleStringProperty()
+        val rateNZD = SimpleStringProperty()
         val usdCurrency = SimpleStringProperty()
         val gbpCurrency = SimpleStringProperty()
         val eurCurrency = SimpleStringProperty()
+        val chfCurrency = SimpleStringProperty()
+        val nzdCurrency = SimpleStringProperty()
+
+        var history1: StringBuilder;
 
 
-        var history1 = StringBuilder("")
 
-
-        rateUSD.value = bitcoinAPI.getRateUSD()
-        rateGBP.value = bitcoinAPI.getRateGBP()
-        rateEUR.value = bitcoinAPI.getRateEUR()
-
-
-        updatedTime.value = bitcoinAPI.getUpdateTime()
 
         CoroutineScope(Main).launch {
             while (true) {
-                updatedTime.value = bitcoinAPI.getUpdateTime()
-                delay(5000)
-            }
-        }
-        CoroutineScope(Main).launch {
-            while (true) {
-                rateUSD.value = bitcoinAPI.getRateUSD()
-                usdCurrency.value = bitcoinAPI.getUSDcurrency()
-                val bitcoin = Bitcoin(rateUSD.value, usdCurrency.value, updatedTime.value)
-                data.add(bitcoin)
-                delay(5000)
+                println("starting.....")
+                updatedTime.value = bitcoinApi.getCurruncyData(Currency.CHF).time
+                delay(2000)
             }
         }
 
-        CoroutineScope(Main).launch {
-            while (true) {
-                rateGBP.value = bitcoinAPI.getRateGBP()
-                gbpCurrency.value = bitcoinAPI.getGBPcurrency()
-                val bitcoin = Bitcoin(rateGBP.value, gbpCurrency.value, updatedTime.value)
-                data.add(bitcoin)
-                delay(5000)
+        runAsync {
+            CoroutineScope(Main).launch {
+                while (true) {
+                    println("starting.....")
+                    rateUSD.value = bitcoinApi.getCurruncyData(Currency.USD).price
+                    usdCurrency.value = bitcoinApi.getCurruncyData(Currency.USD).currencyCode
+                    val bitcoin = Bitcoin(rateUSD.value, usdCurrency.value, updatedTime.value)
+                    data.add(bitcoin)
+                    delay(2000)
+                }
             }
+            CoroutineScope(Main).launch {
+                while (true) {
+                    rateGBP.value = bitcoinApi.getCurruncyData(Currency.GBP).price
+                    gbpCurrency.value = bitcoinApi.getCurruncyData(Currency.GBP).currencyCode
+                    val bitcoin = Bitcoin(rateGBP.value, gbpCurrency.value, updatedTime.value)
+                    data.add(bitcoin)
+                    delay(2000)
+                }
+            }
+            CoroutineScope(Main).launch {
+                while (true) {
+                    rateEUR.value = bitcoinApi.getCurruncyData(Currency.EUR).price
+                    eurCurrency.value = bitcoinApi.getCurruncyData(Currency.EUR).currencyCode
+                    val bitcoin = Bitcoin(rateEUR.value, eurCurrency.value, updatedTime.value)
+                    data.add(bitcoin)
+                    delay(2000)
+                }
+            }
+            CoroutineScope(Main).launch {
+                while (true) {
+                    rateCHF.value = bitcoinApi.getCurruncyData(Currency.CHF).price
+                    chfCurrency.value = bitcoinApi.getCurruncyData(Currency.CHF).currencyCode
+                    val bitcoin = Bitcoin(rateCHF.value, chfCurrency.value, updatedTime.value)
+                    data.add(bitcoin)
+                    delay(2000)
+                }
+            }
+            CoroutineScope(Main).launch {
+                while (true) {
+                    rateNZD.value = bitcoinApi.getCurruncyData(Currency.NZD).price
+                    nzdCurrency.value = bitcoinApi.getCurruncyData(Currency.NZD).currencyCode
+                    val bitcoin = Bitcoin(rateCHF.value, nzdCurrency.value, updatedTime.value)
+                    data.add(bitcoin)
+                    delay(2000)
+                }
+            }
+
         }
 
-        CoroutineScope(Main).launch {
-            while (true) {
-                rateEUR.value = bitcoinAPI.getRateEUR()
-                eurCurrency.value = bitcoinAPI.getEURcurrency()
-                val bitcoin = Bitcoin(rateEUR.value, eurCurrency.value, updatedTime.value)
-                data.add(bitcoin)
-                delay(5000)
-            }
-        }
+
+
         top{
             hbox {
                 label {
@@ -98,35 +117,56 @@ class MainView : View("Hello TornadoFX") {
                     addClass(Styles.boxes)
 
 
-
                     imageview("file:src/main/resources/usa_flag.png"){
-                        fitHeight = 75.0; fitWidth = 75.0 }
+                        fitHeight = 60.0; fitWidth = 60.0 }
 
                     label {
                         bind(rateUSD)
-                        addClass(Styles.heading)
+                        addClass(Styles.priceLabel)
                     }
                 }
                 vbox {
                     addClass(Styles.boxes)
 
                     imageview("file:src/main/resources/uk_flag.png"){
-                        fitHeight = 75.0; fitWidth = 75.0 }
+                        fitHeight = 60.0; fitWidth = 60.0 }
 
                     label {
                         bind(rateGBP)
-                        addClass(Styles.heading)
+                        addClass(Styles.priceLabel)
                     }
                 }
                 vbox {
                     addClass(Styles.boxes)
 
                     imageview("file:src/main/resources/eu_flag.png"){
-                        fitHeight = 75.0; fitWidth = 75.0 }
+                        fitHeight = 60.0; fitWidth = 60.0 }
 
                     label {
                         bind(rateEUR)
-                        addClass(Styles.heading)
+                        addClass(Styles.priceLabel)
+                    }
+                }
+                vbox {
+                    addClass(Styles.boxes)
+
+                    imageview("file:src/main/resources/swiss_flag.png"){
+                        fitHeight = 60.0; fitWidth = 60.0 }
+
+                    label {
+                        bind(rateCHF)
+                        addClass(Styles.priceLabel)
+                    }
+                }
+                vbox {
+                    addClass(Styles.boxes)
+
+                    imageview("file:src/main/resources/newzealand_flag.png"){
+                        fitHeight = 60.0; fitWidth = 60.0 }
+
+                    label {
+                        bind(rateNZD)
+                        addClass(Styles.priceLabel)
                     }
                 }
             }
@@ -139,7 +179,9 @@ class MainView : View("Hello TornadoFX") {
             }
 
             vbox {
+
                 tblItems = tableview(data) {
+
                     //this.isEditable = false
                     column("Price",Bitcoin::priceProperty)
                     column("Currency",Bitcoin::currencyProperty)
@@ -170,13 +212,12 @@ class MainView : View("Hello TornadoFX") {
                         text = "Export History"
                         var txt = ""
                         action {
-                            bitcoinAPI.printOutHistory(data)
+                            bitcoinApi.printOutHistory(data)
                             feedbackLabel.isVisible = true
                             CoroutineScope(IO).launch {
                                 delay(5000)
                                 feedbackLabel.isVisible = false
                             }
-
                         }
                     }
                     feedbackLabel= label {
@@ -184,9 +225,6 @@ class MainView : View("Hello TornadoFX") {
                         text = "History has been exported successfully"
                         addClass(Styles.errorLabel)
                     }
-                }
-                label {
-                    text = "Powered by CoinDesk"
                 }
             }
 

@@ -15,6 +15,7 @@ class Styles : Stylesheet() {
         val boxes by cssclass()
         val bottomHbox by cssclass()
         val errorLabel by cssclass()
+        val priceLabel by cssclass()
 
     }
 
@@ -24,6 +25,11 @@ class Styles : Stylesheet() {
             fontSize = 20.px
             fontWeight = FontWeight.BOLD
             cursor = Cursor.TEXT
+        }
+        priceLabel{
+            fontSize = 15.px
+            fontWeight = FontWeight.BOLD
+
         }
         boxes {
             padding = box(20.px)
